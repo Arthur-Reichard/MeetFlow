@@ -1,0 +1,6 @@
+# API Key Configuration
+# Copy this file to config.py and add your Groq API key
+# config.py is in .gitignore and will not be committed to GitHub
+
+GROQ_API_KEY = "YOUR_GROQ_API_KEY_HERE"
+
