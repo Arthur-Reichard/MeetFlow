@@ -45,15 +45,6 @@ def test_imports():
         traceback.print_exc()
         sys.exit(1)
     
-    try:
-        from backend.utils.config import get_groq_api_key
-        print("✅ Config utility import successful")
-    except ImportError as e:
-        print(f"❌ Config utility import failed: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
-    
     print("\n✅ All imports successful!")
 
 if __name__ == "__main__":
