@@ -31,9 +31,7 @@ jobs:
 
       - name: Test imports
         run: |
-          python -c "import streamlit; import groq; import faster_whisper; print('All imports successful')"
-          python -c "from backend.services.transcription_service import TranscriptionService; print('Backend imports successful')"
-          python -c "from backend.services.analysis_service import AnalysisService; print('Analysis service import successful')"
+          python test_imports.py
 
       - name: Check code quality
         run: |

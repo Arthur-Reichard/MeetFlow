@@ -4,8 +4,16 @@ Handles meeting transcription analysis with open source LLM
 """
 
 import json
+import os
+import sys
 from groq import Groq
 from typing import Dict, Optional
+
+# Add project root to path for imports
+_project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
+
 from backend.utils.config import get_groq_api_key
 
 
