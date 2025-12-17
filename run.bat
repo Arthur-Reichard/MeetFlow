@@ -1,5 +1,7 @@
 @echo off
 REM Script de lancement pour MeetFlow AI
 REM Lance l'application frontend Streamlit
-py -3.13 -m streamlit run frontend/app.py
+echo 🚀 Démarrage de MeetFlow AI...
+echo.
+python -m streamlit run frontend/app.py
 

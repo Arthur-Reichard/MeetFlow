@@ -110,11 +110,23 @@ MeetFlow/
 ## ▶️ Lancement de l'application
 
 ### Windows
-```bash
-run.bat
+
+**Option 1 : Script PowerShell (recommandé)**
+```powershell
+.\run.ps1
 ```
 
-### Linux/Mac ou ligne de commande
+**Option 2 : Script batch**
+```cmd
+.\run.bat
+```
+
+**Option 3 : Ligne de commande**
+```bash
+streamlit run frontend/app.py
+```
+
+### Linux/Mac
 ```bash
 streamlit run frontend/app.py
 ```

@@ -17,7 +17,35 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.services.transcription_service import TranscriptionService
 from backend.services.analysis_service import AnalysisService
-from backend.utils.config import get_groq_api_key
+
+# Define get_groq_api_key function directly (works in all environments)
+# In production (Streamlit Cloud, GitHub Actions), uses environment variables
+# In local dev, can also use config.py if available
+def get_groq_api_key():
+    """
+    Get Groq API key from environment variable or config file.
+    Priority: environment variable > .env file > config.py (local dev only)
+    """
+    # First try environment variable (works in Streamlit Cloud, GitHub Actions)
+    api_key = os.getenv("GROQ_API_KEY")
+    
+    if api_key:
+        return api_key
+    
+    # Fallback: try to import from config.py (local development only)
+    try:
+        from config import GROQ_API_KEY
+        return GROQ_API_KEY
+    except ImportError:
+        pass
+    
+    # If nothing works, raise error
+    raise ValueError(
+        "GROQ_API_KEY not found. Please set it as:\n"
+        "1. Environment variable: GROQ_API_KEY (for Streamlit Cloud/GitHub Actions)\n"
+        "2. .env file: GROQ_API_KEY=your_key_here\n"
+        "3. config.py (local dev only): GROQ_API_KEY = 'your_key_here'"
+    )
 
 # Streamlit page configuration
 st.set_page_config(
