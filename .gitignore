@@ -47,5 +47,6 @@ temp_audio.*
 *.log
 
 # Streamlit
-.streamlit/
+.streamlit/secrets.toml
+.streamlit/credentials.json
 

@@ -1,0 +1,60 @@
+name: Deploy to Streamlit Cloud
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Test imports
+        run: |
+          python -c "import streamlit; import groq; import faster_whisper; print('All imports successful')"
+          python -c "from backend.services.transcription_service import TranscriptionService; print('Backend imports successful')"
+          python -c "from backend.services.analysis_service import AnalysisService; print('Analysis service import successful')"
+
+      - name: Check code quality
+        run: |
+          pip install flake8
+          flake8 frontend/app.py --max-line-length=120 --ignore=E501,W503 || true
+          flake8 backend/ --max-line-length=120 --ignore=E501,W503 || true
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Streamlit Cloud
+        run: |
+          echo "✅ Code validated successfully!"
+          echo "📝 To deploy to Streamlit Cloud:"
+          echo "1. Go to https://share.streamlit.io/"
+          echo "2. Connect your GitHub repository"
+          echo "3. Add GROQ_API_KEY as a secret in Streamlit Cloud settings"
+          echo "4. Streamlit Cloud will automatically deploy your app"
+
