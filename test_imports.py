@@ -24,11 +24,16 @@ def test_imports():
         sys.exit(1)
     
     print("\nTesting backend imports...")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Python path: {sys.path[:3]}...")  # Show first 3 entries
+    
     try:
         from backend.services.transcription_service import TranscriptionService
         print("✅ TranscriptionService import successful")
     except ImportError as e:
         print(f"❌ TranscriptionService import failed: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
     
     try:
@@ -36,6 +41,8 @@ def test_imports():
         print("✅ AnalysisService import successful")
     except ImportError as e:
         print(f"❌ AnalysisService import failed: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
     
     try:
@@ -43,6 +50,8 @@ def test_imports():
         print("✅ Config utility import successful")
     except ImportError as e:
         print(f"❌ Config utility import failed: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
     
     print("\n✅ All imports successful!")

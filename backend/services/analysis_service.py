@@ -10,11 +10,35 @@ from groq import Groq
 from typing import Dict, Optional
 
 # Add project root to path for imports
-_project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# This ensures backend.* imports work from anywhere
+_current_file = os.path.abspath(__file__)
+# Current: backend/services/analysis_service.py
+# Go up 2 levels: backend/services -> backend -> project root
+_backend_dir = os.path.dirname(os.path.dirname(_current_file))  # backend/
+_project_root = os.path.dirname(_backend_dir)  # project root
+
+# Ensure project root is in path (check and add if needed)
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
-from backend.utils.config import get_groq_api_key
+# Import using absolute import (now that path is set)
+# Use a try-except to handle import errors gracefully
+try:
+    from backend.utils.config import get_groq_api_key
+except ImportError:
+    # Fallback: try importing directly from the file
+    import importlib.util
+    config_file_path = os.path.join(_backend_dir, 'utils', 'config.py')
+    if os.path.exists(config_file_path):
+        spec = importlib.util.spec_from_file_location("backend.utils.config", config_file_path)
+        if spec and spec.loader:
+            config_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(config_module)
+            get_groq_api_key = config_module.get_groq_api_key
+        else:
+            raise ImportError(f"Could not load config module from {config_file_path}")
+    else:
+        raise ImportError(f"Config file not found at {config_file_path}")
 
 
 class AnalysisService:
