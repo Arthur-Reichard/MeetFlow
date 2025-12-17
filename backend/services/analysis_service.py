@@ -23,22 +23,25 @@ if _project_root not in sys.path:
 
 # Import using absolute import (now that path is set)
 # Use a try-except to handle import errors gracefully
+# In production (GitHub Actions, Streamlit Cloud), we only need environment variables
+# The config.py file is only for local development
 try:
     from backend.utils.config import get_groq_api_key
 except ImportError:
-    # Fallback: try importing directly from the file
-    import importlib.util
-    config_file_path = os.path.join(_backend_dir, 'utils', 'config.py')
-    if os.path.exists(config_file_path):
-        spec = importlib.util.spec_from_file_location("backend.utils.config", config_file_path)
-        if spec and spec.loader:
-            config_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(config_module)
-            get_groq_api_key = config_module.get_groq_api_key
-        else:
-            raise ImportError(f"Could not load config module from {config_file_path}")
-    else:
-        raise ImportError(f"Config file not found at {config_file_path}")
+    # Fallback: define get_groq_api_key directly using environment variables
+    # This works in GitHub Actions where secrets are set as environment variables
+    def get_groq_api_key():
+        """
+        Get Groq API key from environment variable.
+        For GitHub Actions and Streamlit Cloud, the key is set as an environment variable.
+        """
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "GROQ_API_KEY not found in environment variables. "
+                "Please set it as an environment variable or GitHub Secret."
+            )
+        return api_key
 
 
 class AnalysisService:
